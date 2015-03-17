@@ -1,0 +1,146 @@
+<html>
+    <head>
+        <script type="text/javascript" src="./vogogo.creditcard.v1.min.js"></script>
+    </head>
+
+
+    <script type="text/javascript">
+        // Submit, letting vogogo.creditcard.v1.min.js extract values from the HTML form. Alternatively, extract
+        // the values from the form yourself and pass them as JSON in place of the form object.
+        // vogogo.credticard.js then inserts a JSONP <script> element into the
+        // <head> to_trigger the request in a cross-domain safe way.
+        function submitForm() {
+            Vogogo.setMerchantId("33829a2cb62325d22bc2ebe88c649cd4a89671261e7438b08db4a5f6bfd63c3d");
+
+            Vogogo.setStaging(); // Use this while testing in Vogogo's Staging environment
+
+            var form = document.getElementById("payment-form");
+            Vogogo.getCardId(form, callback);
+        }
+
+        // JSONP callback as given to Vogogo.getCardId(). This is expected to be available at the root level.
+        function callback(data) {
+            if (data.error) {
+                return alert(data.error);
+            }
+
+            var form = document.getElementById("payment-form");
+
+            // Append credit card reference to form
+            var input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'card_id';
+            input.value = data.id;
+            form.appendChild(input);
+
+            // The next step would be a form.submit() to POST the named inputs to the merchant
+            // so that secure charge request to Vogogo can be made. The named inputs are:
+            // - amount
+            // - currency
+            // - card_id (as just appended)
+            // - cvc
+            alert("CALLBACK: " + JSON.stringify(data));
+//            form.submit(); // POST to merchant so that secure charge can be made
+        }
+    </script>
+
+
+    <body>
+    <form method="post" id='payment-form'>
+        <input type="hidden" data-vogogo-cc="customer_id" value="37b14d80-8ff9-4ffe-9969-62907106ceba"/>
+
+        <table width=518 border="0" cellpadding="0" cellspacing="0" bgcolor="#FFFFFF">
+            <tr bgcolor="#E5E5E5">
+                <td height="22" colspan="3" align="left" valign="middle"><strong>&nbsp;Billing Information (required)</strong></td>
+            </tr>
+
+            <tr>
+                <td height="22" align="right" valign="middle">Currency:</td>
+                <td colspan="2" align="left"><input name="currency" type="text" size="50" value="USD"></td>
+            </tr>
+
+            <tr>
+                <td height="22" align="right" valign="middle">Name on Card:</td>
+                <td colspan="2" align="left"><input data-vogogo-cc="card_name" type="text" value="John Doe" size="50"></td>
+            </tr>
+
+            <tr>
+                <td height="22" align="right" valign="middle">Street Address:</td>
+                <td colspan="2" align="left"><input data-vogogo-cc="address_street_1" type="text" value="228 Hamilton Ave" size="50"></td>
+            </tr>
+
+            <tr>
+                <td height="22" align="right" valign="middle">Street Address (2):</td>
+                <td colspan="2" align="left"><input data-vogogo-cc="address_street_2" type="text" value="3rd Floor" size="50"></td>
+            </tr>
+
+            <tr>
+                <td height="22" align="right" valign="middle">City:</td>
+                <td colspan="2" align="left"><input data-vogogo-cc="address_city" type="text" value="Palo Alto" size="50"></td>
+            </tr>
+
+            <tr>
+                <td height="22" align="right" valign="middle">State/Province:</td>
+                <td colspan="2" align="left"><input data-vogogo-cc="address_state" type="text" value="CA" size="50"></td>
+            </tr>
+
+            <tr>
+                <td height="22" align="right" valign="middle">Zip/Postal Code:</td>
+                <td colspan="2" align="left"><input data-vogogo-cc="address_postal_code" type="text" value="94301" size="50"></td>
+            </tr>
+
+            <tr>
+                <td height="22" align="right" valign="middle">Country:</td>
+                <td colspan="2" align="left"><input data-vogogo-cc="address_country" type="text" value="US" size="50"></td>
+            </tr>
+
+            <tr>
+                <td height="22" colspan="3" align="left" valign="middle">&nbsp;</td>
+            </tr>
+
+            <tr bgcolor="#E5E5E5">
+                <td height="22" colspan="3" align="left" valign="middle"><strong>&nbsp;Credit Card (required)</strong></td>
+            </tr>
+
+            <tr>
+                <td height="22" width="180" align="right" valign="middle">Amount:</td>
+                <td colspan="2" align="left"><input name="amount" type="number" size="50" value="1.01"></td>
+            </tr>
+
+            <tr>
+                <td height="22" align="right" valign="middle">Credit Card Number:</td>
+                <td colspan="2" align="left"><input data-vogogo-cc="card_number" type="text" value="4012888888881881" size="19" maxlength="40"></td>
+            </tr>
+
+            <tr>
+                <td height="22" align="right" valign="middle">Expiry Month:</td>
+                <td colspan="2" align="left"><input data-vogogo-cc="expiry_date_month" type="text" value="05" size="19" maxlength="2"></td>
+            </tr>
+
+            <tr>
+                <td height="22" align="right" valign="middle">Expiry Year:</td>
+                <td colspan="2" align="left"><input data-vogogo-cc="expiry_date_year" type="text" value="15" size="19" maxlength="2"></td>
+            </tr>
+
+
+
+            <tr>
+                <td height="22" align="right" valign="middle">CVC</td>
+                <td colspan="2" align="left"><input name="cvc" type="text" value="343" size="50"></td>
+            </tr>
+
+
+            <tr>
+                <td height="22" colspan="3" align="left" valign="middle">&nbsp;</td>
+            </tr>
+
+        </table>
+        <p>
+            <input type="button" class="btn btn-primary" value="Get Token" onclick="submitForm();return false;">
+        </p>
+        <p>
+            <input type="button" class="btn btn-primary" value="Pay (manually extract inputs)" onclick="submitJson();return false;">
+        </p>
+    </form>
+    </body>
+</html>
